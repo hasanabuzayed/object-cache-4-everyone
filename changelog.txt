@@ -9,6 +9,7 @@ The current release notes also live in readme.txt under "== Changelog ==".
 * Improved: The detected Memcached server address is now written to the generated object-cache.php drop-in with a safe encoder, and a server set via OC4EVERYONE_MEMCACHED_SERVER is validated against a strict host:port pattern.
 * Improved: Disk object cache files are now protected from direct web access (deny-all rules and a non-PHP file extension) and verified with an HMAC integrity signature before being unserialized.
 * Fix: The disk backend uses plain PHP filesystem calls — the drop-in boots from wp_start_object_cache() before WP_Filesystem can be loaded, which fatally broke cache initialization.
+* Fix: All disk operations are now race-safe under concurrent requests (WooCommerce fires parallel admin requests): directory creation re-checks state instead of emitting "File exists", writes retry once if a concurrent flush removes the target directory, and concurrent flushes can no longer fatal on PHP 8.
 * Fix: Removed a debug log call that ran on every cache flush.
 * Fix: Replaced the deprecated current_time('timestamp') call used when stamping the generated drop-in.
 * Fix: Corrected malformed HTML tags in the Plugins-screen statistics output.

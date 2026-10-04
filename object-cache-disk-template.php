@@ -28,7 +28,10 @@ class ObjectCacheDisk
         //Create
         $this->local_path =  WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'object' . DIRECTORY_SEPARATOR;
         if (!file_exists($this->local_path)) {
-            $return = mkdir($this->local_path, 0755, true);
+            // Race-safe: concurrent first requests can both reach mkdir(); @ +
+            // is_dir() re-check so the loser emits no warning (stray output
+            // before headers breaks responses).
+            $return = @mkdir($this->local_path, 0755, true) || is_dir($this->local_path);
             if (!$return) {
                 $this->result_code = self::RES_FAILURE;
                 return;
@@ -50,12 +53,12 @@ class ObjectCacheDisk
     private function protect_dir($dir)
     {
         if (!file_exists($dir . 'index.php')) {
-            file_put_contents($dir . 'index.php', '<?php // Silence is golden.');
+            file_put_contents($dir . 'index.php', '<?php // Silence is golden.', LOCK_EX);
         }
 
         if (!file_exists($dir . '.htaccess')) {
             $htaccess = "<IfModule mod_authz_core.c>\nRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\nOrder allow,deny\nDeny from all\n</IfModule>\n";
-            file_put_contents($dir . '.htaccess', $htaccess);
+            file_put_contents($dir . '.htaccess', $htaccess, LOCK_EX);
         }
     }
 
@@ -83,20 +86,25 @@ class ObjectCacheDisk
 
     private function deleteDirectory($dirPath)
     {
-        if (is_dir($dirPath)) {
-            $objects = scandir($dirPath);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (filetype($dirPath . DIRECTORY_SEPARATOR . $object) == "dir") {
-                        $this->deleteDirectory($dirPath . DIRECTORY_SEPARATOR . $object);
-                    } else {
-                        unlink($dirPath . DIRECTORY_SEPARATOR . $object);
-                    }
+        if (!is_dir($dirPath)) {
+            return false;
+        }
+        // @ : a concurrent flush() of the same tree can remove this directory
+        // between the is_dir() check and scandir(); treat that as already gone.
+        $objects = @scandir($dirPath);
+        if ($objects === false) {
+            return false;
+        }
+        foreach ($objects as $object) {
+            if ($object != "." && $object != "..") {
+                if (@filetype($dirPath . DIRECTORY_SEPARATOR . $object) == "dir") {
+                    $this->deleteDirectory($dirPath . DIRECTORY_SEPARATOR . $object);
+                } else {
+                    @unlink($dirPath . DIRECTORY_SEPARATOR . $object);
                 }
             }
-            reset($objects);
-            return rmdir($dirPath);
         }
+        return @rmdir($dirPath);
     }
 
     public function flush($delay = 0)
@@ -126,11 +134,16 @@ class ObjectCacheDisk
         //Find file and put
         $path = $this->_get_path($key);
         if (file_exists($path)) {
-            unlink($path);
+            // @unlink: a concurrent delete of the same key may win the race and
+            // remove the file first; treat that as NOTFOUND, not a warning.
+            if (!@unlink($path)) {
+                $this->result_code = self::RES_NOTFOUND;
+                return false;
+            }
 
             $dir = dirname($path);
             if (is_dir($dir)) {
-                rmdir($dir);
+                @rmdir($dir);
             }
 
             $this->result_code = self::RES_SUCCESS;
@@ -159,7 +172,10 @@ class ObjectCacheDisk
         //Folder for file
         $dir = dirname($path);
         if (!is_dir($dir)) {
-            $return = mkdir($dir, 0755, true);
+            // Race-safe: parallel requests (WooCommerce admin fires several) can
+            // both pass the is_dir() check; @ + re-check so the mkdir() loser
+            // emits no "File exists" warning before headers are sent.
+            $return = @mkdir($dir, 0755, true) || is_dir($dir);
             if (!$return) {
                 $this->result_code = self::RES_FAILURE;
                 return false;
@@ -174,7 +190,14 @@ class ObjectCacheDisk
         $serialized = @serialize($value);
         $blob       = hash_hmac('sha256', $serialized, $this->hmac_key()) . $serialized;
 
-        $return = file_put_contents($path, $blob, LOCK_EX);
+        // @ + one retry: a concurrent flush()/delete() can remove the hashed
+        // directory between the mkdir() above and this write; recreate and
+        // retry once before treating it as a failure.
+        $return = @file_put_contents($path, $blob, LOCK_EX);
+        if (!$return) {
+            @mkdir($dir, 0755, true);
+            $return = @file_put_contents($path, $blob, LOCK_EX);
+        }
         if (!$return) {
             $this->result_code = self::RES_FAILURE;
             return false;
@@ -193,7 +216,9 @@ class ObjectCacheDisk
             return false;
         }
 
-        $objData = file_get_contents($path);
+        // @ : the file can vanish between the is_readable() check and this read
+        // when a concurrent request deletes the same key.
+        $objData = @file_get_contents($path);
         if ($objData === false || strlen($objData) < 64) {
             $this->result_code = self::RES_FAILURE;
             return false;
