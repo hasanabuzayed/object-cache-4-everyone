@@ -6,17 +6,20 @@
  *
  */
 
-defined('WP_UNINSTALL_PLUGIN') || exit;
+defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
-if (defined('WP_DEBUG') && WP_DEBUG) {
-    error_log('uninstall.php');
+if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+	error_log( 'uninstall.php' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 }
 
-//Delete object-cache.php
-include_once('oc4-deactivation.php');
+// Delete object-cache.php.
+require_once 'oc4-deactivation.php';
 
-//Clean everything
+// Clean everything.
 oc4everyone_deactivation();
 
 // Clear any cached data that has been removed.
 wp_cache_flush();
+/**
+ * Silence is golden.
+ */

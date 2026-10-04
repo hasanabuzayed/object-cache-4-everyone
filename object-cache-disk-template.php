@@ -20,9 +20,13 @@ class ObjectCacheDisk
 
     public function __construct($persistent_id = null)
     {
+        // NOTE: this drop-in boots from wp_start_object_cache() before most of core
+        // is loaded (l10n.php defines __() 23 lines later in wp-settings.php), so
+        // wp-admin/includes/file.php cannot be required here. All disk access in
+        // this class must use plain PHP filesystem functions — never WP_Filesystem.
+
         //Create
         $this->local_path =  WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'object' . DIRECTORY_SEPARATOR;
-
         if (!file_exists($this->local_path)) {
             $return = mkdir($this->local_path, 0755, true);
             if (!$return) {
@@ -30,7 +34,45 @@ class ObjectCacheDisk
                 return;
             }
         }
+
+        // Block direct web access and directory listing of the cache tree.
+        $this->protect_dir($this->local_path);
+
         $this->result_code = self::RES_SUCCESS;
+    }
+
+    /**
+     * Drops an index.php and a deny-all .htaccess in a cache directory so the
+     * serialized cache files cannot be listed or served over the web.
+     *
+     * @param string $dir Directory to protect (with trailing separator).
+     */
+    private function protect_dir($dir)
+    {
+        if (!file_exists($dir . 'index.php')) {
+            file_put_contents($dir . 'index.php', '<?php // Silence is golden.');
+        }
+
+        if (!file_exists($dir . '.htaccess')) {
+            $htaccess = "<IfModule mod_authz_core.c>\nRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\nOrder allow,deny\nDeny from all\n</IfModule>\n";
+            file_put_contents($dir . '.htaccess', $htaccess);
+        }
+    }
+
+    /**
+     * Returns the secret used to sign cache files on disk.
+     *
+     * @return string
+     */
+    private function hmac_key()
+    {
+        if (defined('AUTH_SALT') && AUTH_SALT) {
+            return AUTH_SALT;
+        }
+        if (defined('SECURE_AUTH_SALT') && SECURE_AUTH_SALT) {
+            return SECURE_AUTH_SALT;
+        }
+        return 'oc4everyone-disk-cache';
     }
 
     public function quit()
@@ -128,7 +170,11 @@ class ObjectCacheDisk
             $value = clone $value;
         }
 
-        $return = file_put_contents($path, @serialize($value));
+        // Sign the serialized payload so a tampered cache file is rejected before unserialize().
+        $serialized = @serialize($value);
+        $blob       = hash_hmac('sha256', $serialized, $this->hmac_key()) . $serialized;
+
+        $return = file_put_contents($path, $blob, LOCK_EX);
         if (!$return) {
             $this->result_code = self::RES_FAILURE;
             return false;
@@ -142,18 +188,28 @@ class ObjectCacheDisk
     {
         //Find file and return
         $path = $this->_get_path($key);
-        if (!file_exists($path) ||  !is_readable($path)) {
+        if (!file_exists($path) || !is_readable($path)) {
             $this->result_code = self::RES_FAILURE;
             return false;
         }
 
         $objData = file_get_contents($path);
-        if ($objData === false) {
+        if ($objData === false || strlen($objData) < 64) {
             $this->result_code = self::RES_FAILURE;
             return false;
         }
 
-        $data = unserialize($objData);
+        // Verify the HMAC signature before unserializing. A tampered or unsigned
+        // file fails the constant-time comparison and is treated as a cache miss,
+        // so attacker-controlled bytes never reach unserialize().
+        $stored_hmac = substr($objData, 0, 64);
+        $serialized  = substr($objData, 64);
+        if (!hash_equals(hash_hmac('sha256', $serialized, $this->hmac_key()), $stored_hmac)) {
+            $this->result_code = self::RES_FAILURE;
+            return false;
+        }
+
+        $data = unserialize($serialized);
 
         $this->result_code = self::RES_SUCCESS;
         return $data;
@@ -165,7 +221,10 @@ class ObjectCacheDisk
 
         $array_hash = str_split($hash, 8); //8 name based
 
-        $path = $this->local_path . implode(DIRECTORY_SEPARATOR, $array_hash) . DIRECTORY_SEPARATOR . '.object';
+        $path = $this->local_path . implode(DIRECTORY_SEPARATOR, $array_hash);
+
+        // Cache payload stored with a non-PHP extension so it is never executed even if served directly.
+        $path .= DIRECTORY_SEPARATOR . '.object.cache';
         return $path;
     }
 }

@@ -8,15 +8,15 @@
  *
  */
 if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+	exit; // Exit if accessed directly.
 }
 
-if (class_exists('Memcached')) {
-    /**
-     * Adds a value to cache.
-     *
-     * If the specified key already exists, the value is not stored and the function
-     * returns false.
+if ( class_exists( 'Memcached' ) ) {
+	/**
+	 * Adds a value to cache.
+	 *
+	 * If the specified key already exists, the value is not stored and the function
+	 * returns false.
      *
      * @link http://www.php.net/manual/en/memcached.add.php
      *
@@ -26,11 +26,10 @@ if (class_exists('Memcached')) {
      * @param int       $expiration The expiration time, defaults to 0.
      * @return bool                 Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_add($key, $value, $group = '', $expiration = 0)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->add($key, $value, $group, $expiration);
-    }
+	function wp_cache_add( $key, $value, $group = '', $expiration = 0 ) {
+		global $wp_object_cache;
+		return $wp_object_cache->add( $key, $value, $group, $expiration );
+	}
 
 
     /**
@@ -50,11 +49,10 @@ if (class_exists('Memcached')) {
      * @param string    $group  The group value appended to the $key.
      * @return bool             Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_append($key, $value, $group = '')
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->append($key, $value, $group);
-    }
+	function wp_cache_append( $key, $value, $group = '' ) {
+		global $wp_object_cache;
+		return $wp_object_cache->append( $key, $value, $group );
+	}
 
 
     /**
@@ -72,11 +70,10 @@ if (class_exists('Memcached')) {
      * @param int       $expiration The expiration time, defaults to 0.
      * @return bool                 Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_cas($cas_token, $key, $value, $group = '', $expiration = 0)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->cas($cas_token, $key, $value, $group, $expiration);
-    }
+	function wp_cache_cas( $cas_token, $key, $value, $group = '', $expiration = 0 ) {
+		global $wp_object_cache;
+		return $wp_object_cache->cas( $cas_token, $key, $value, $group, $expiration );
+	}
 
 
     /**
@@ -91,10 +88,9 @@ if (class_exists('Memcached')) {
      *
      * @return  bool    Always returns True
      */
-    function wp_cache_close()
-    {
-        return true;
-    }
+	function wp_cache_close() {
+		return true;
+	}
 
     /**
      * Decrement a numeric item's value.
@@ -106,11 +102,10 @@ if (class_exists('Memcached')) {
      * @param string    $group  The group value appended to the $key.
      * @return int|bool         Returns item's new value on success or FALSE on failure.
      */
-    function wp_cache_decrement($key, $offset = 1, $group = '')
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->decrement($key, $offset, $group);
-    }
+	function wp_cache_decrement( $key, $offset = 1, $group = '' ) {
+		global $wp_object_cache;
+		return $wp_object_cache->decrement( $key, $offset, $group );
+	}
 
     /**
      * Decrement a numeric item's value.
@@ -125,10 +120,9 @@ if (class_exists('Memcached')) {
      * @param string    $group  The group value appended to the $key.
      * @return int|bool         Returns item's new value on success or FALSE on failure.
      */
-    function wp_cache_decr($key, $offset = 1, $group = '')
-    {
-        return wp_cache_decrement($key, $offset, $group);
-    }
+	function wp_cache_decr( $key, $offset = 1, $group = '' ) {
+		return wp_cache_decrement( $key, $offset, $group );
+	}
 
     /**
      * Remove the item from the cache.
@@ -145,11 +139,10 @@ if (class_exists('Memcached')) {
      * @param int       $time   The amount of time the server will wait to delete the item in seconds.
      * @return bool             Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_delete($key, $group = '', $time = 0)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->delete($key, $group, $time);
-    }
+	function wp_cache_delete( $key, $group = '', $time = 0 ) {
+		global $wp_object_cache;
+		return $wp_object_cache->delete( $key, $group, $time );
+	}
 
     /**
      * Fetch the next result.
@@ -158,11 +151,10 @@ if (class_exists('Memcached')) {
      *
      * @return  array|bool   Returns the next result or FALSE otherwise.
      */
-    function wp_cache_fetch()
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->fetch();
-    }
+	function wp_cache_fetch() {
+		global $wp_object_cache;
+		return $wp_object_cache->fetch();
+	}
 
     /**
      * Fetch all remaining results from the last request.
@@ -171,11 +163,10 @@ if (class_exists('Memcached')) {
      *
      * @return  array|bool  Returns the results or FALSE on failure.
      */
-    function wp_cache_fetch_all()
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->fetchAll();
-    }
+	function wp_cache_fetch_all() {
+		global $wp_object_cache;
+		return $wp_object_cache->fetchAll();
+	}
 
     /**
      * Invalidate all items in the cache.
@@ -185,11 +176,10 @@ if (class_exists('Memcached')) {
      * @param int       $delay  Number of seconds to wait before invalidating the items.
      * @return bool             Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_flush($delay = 0)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->flush($delay);
-    }
+	function wp_cache_flush( $delay = 0 ) {
+		global $wp_object_cache;
+		return $wp_object_cache->flush( $delay );
+	}
 
     /**
      * Retrieve object from cache.
@@ -211,16 +201,15 @@ if (class_exists('Memcached')) {
      * @param null|float    $cas_token  The variable to store the CAS token in.
      * @return bool|mixed               Cached object value.
      */
-    function wp_cache_get($key, $group = '', $force = false, &$found = null, $cache_cb = null, &$cas_token = null)
-    {
-        global $wp_object_cache;
+	function wp_cache_get( $key, $group = '', $force = false, &$found = null, $cache_cb = null, &$cas_token = null ) {
+		global $wp_object_cache;
 
-        if (func_num_args() > 4) {
-            return $wp_object_cache->get($key, $group, $force, $found, '', false, $cache_cb, $cas_token);
-        } else {
-            return $wp_object_cache->get($key, $group, $force, $found);
-        }
-    }
+		if ( func_num_args() > 4 ) {
+			return $wp_object_cache->get( $key, $group, $force, $found, '', false, $cache_cb, $cas_token );
+		} else {
+			return $wp_object_cache->get( $key, $group, $force, $found );
+		}
+	}
 
 
     /**
@@ -234,11 +223,10 @@ if (class_exists('Memcached')) {
      * @param null          $value_cb   The result callback or NULL.
      * @return bool                     Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_get_delayed($keys, $groups = '', $with_cas = false, $value_cb = null)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->getDelayed($keys, $groups, $with_cas, $value_cb);
-    }
+	function wp_cache_get_delayed( $keys, $groups = '', $with_cas = false, $value_cb = null ) {
+		global $wp_object_cache;
+		return $wp_object_cache->getDelayed( $keys, $groups, $with_cas, $value_cb );
+	}
 
     /**
      * Gets multiple values from memcached in one request.
@@ -253,16 +241,15 @@ if (class_exists('Memcached')) {
      * @param int           $flags      The flags for the get operation.
      * @return bool|array               Returns the array of found items or FALSE on failure.
      */
-    function wp_cache_get_multi($keys, $groups = '', &$cas_tokens = null, $flags = null)
-    {
-        global $wp_object_cache;
+	function wp_cache_get_multi( $keys, $groups = '', &$cas_tokens = null, $flags = null ) {
+		global $wp_object_cache;
 
-        if (func_num_args() > 2) {
-            return $wp_object_cache->getMulti($keys, $groups, '', $cas_tokens, $flags);
-        } else {
-            return $wp_object_cache->getMulti($keys, $groups);
-        }
-    }
+		if ( func_num_args() > 2 ) {
+			return $wp_object_cache->getMulti( $keys, $groups, '', $cas_tokens, $flags );
+		} else {
+			return $wp_object_cache->getMulti( $keys, $groups );
+		}
+	}
 
     /**
      * Retrieve a Memcached option value.
@@ -272,11 +259,10 @@ if (class_exists('Memcached')) {
      * @param int   $option One of the Memcached::OPT_* constants.
      * @return mixed        Returns the value of the requested option, or FALSE on error.
      */
-    function wp_cache_get_option($option)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->getOption($option);
-    }
+	function wp_cache_get_option( $option ) {
+		global $wp_object_cache;
+		return $wp_object_cache->getOption( $option );
+	}
 
     /**
      * Return the result code of the last option.
@@ -285,11 +271,10 @@ if (class_exists('Memcached')) {
      *
      * @return int  Result code of the last Memcached operation.
      */
-    function wp_cache_get_result_code()
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->getResultCode();
-    }
+	function wp_cache_get_result_code() {
+		global $wp_object_cache;
+		return $wp_object_cache->getResultCode();
+	}
 
     /**
      * Return the message describing the result of the last operation.
@@ -298,11 +283,10 @@ if (class_exists('Memcached')) {
      *
      * @return string   Message describing the result of the last Memcached operation.
      */
-    function wp_cache_get_result_message()
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->getResultMessage();
-    }
+	function wp_cache_get_result_message() {
+		global $wp_object_cache;
+		return $wp_object_cache->getResultMessage();
+	}
 
     /**
      * Get the list of servers in the pool.
@@ -311,11 +295,10 @@ if (class_exists('Memcached')) {
      *
      * @return array    The list of all servers in the server pool.
      */
-    function wp_cache_get_server_list()
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->getServerList();
-    }
+	function wp_cache_get_server_list() {
+		global $wp_object_cache;
+		return $wp_object_cache->getServerList();
+	}
 
     /**
      * Get server pool statistics.
@@ -324,11 +307,10 @@ if (class_exists('Memcached')) {
      *
      * @return array    Array of server statistics, one entry per server.
      */
-    function wp_cache_get_stats()
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->getStats();
-    }
+	function wp_cache_get_stats() {
+		global $wp_object_cache;
+		return $wp_object_cache->getStats();
+	}
 
     /**
      * Get server pool memcached version information.
@@ -337,11 +319,10 @@ if (class_exists('Memcached')) {
      *
      * @return array    Array of server versions, one entry per server.
      */
-    function wp_cache_get_version()
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->getVersion();
-    }
+	function wp_cache_get_version() {
+		global $wp_object_cache;
+		return $wp_object_cache->getVersion();
+	}
 
     /**
      * Increment a numeric item's value.
@@ -353,11 +334,10 @@ if (class_exists('Memcached')) {
      * @param string    $group  The group value appended to the $key.
      * @return int|bool         Returns item's new value on success or FALSE on failure.
      */
-    function wp_cache_increment($key, $offset = 1, $group = '')
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->increment($key, $offset, $group);
-    }
+	function wp_cache_increment( $key, $offset = 1, $group = '' ) {
+		global $wp_object_cache;
+		return $wp_object_cache->increment( $key, $offset, $group );
+	}
 
     /**
      * Increment a numeric item's value.
@@ -372,10 +352,9 @@ if (class_exists('Memcached')) {
      * @param string    $group  The group value appended to the $key.
      * @return int|bool         Returns item's new value on success or FALSE on failure.
      */
-    function wp_cache_incr($key, $offset = 1, $group = '')
-    {
-        return wp_cache_increment($key, $offset, $group);
-    }
+	function wp_cache_incr( $key, $offset = 1, $group = '' ) {
+		return wp_cache_increment( $key, $offset, $group );
+	}
 
     /**
      * Prepend data to an existing item.
@@ -395,11 +374,10 @@ if (class_exists('Memcached')) {
      * @param string    $group  The group value prepended to the $key.
      * @return bool             Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_prepend($key, $value, $group = '')
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->prepend($key, $value, $group);
-    }
+	function wp_cache_prepend( $key, $value, $group = '' ) {
+		global $wp_object_cache;
+		return $wp_object_cache->prepend( $key, $value, $group );
+	}
 
 
     /**
@@ -416,11 +394,10 @@ if (class_exists('Memcached')) {
      * @param int       $expiration The expiration time, defaults to 0.
      * @return bool                 Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_replace($key, $value, $group = '', $expiration = 0)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->replace($key, $value, $group, $expiration);
-    }
+	function wp_cache_replace( $key, $value, $group = '', $expiration = 0 ) {
+		global $wp_object_cache;
+		return $wp_object_cache->replace( $key, $value, $group, $expiration );
+	}
 
 
     /**
@@ -436,11 +413,10 @@ if (class_exists('Memcached')) {
      * @param int       $expiration The expiration time, defaults to 0.
      * @return bool                 Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_set($key, $value, $group = '', $expiration = 0)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->set($key, $value, $group, $expiration);
-    }
+	function wp_cache_set( $key, $value, $group = '', $expiration = 0 ) {
+		global $wp_object_cache;
+		return $wp_object_cache->set( $key, $value, $group, $expiration );
+	}
 
 
     /**
@@ -457,11 +433,10 @@ if (class_exists('Memcached')) {
      * @param int           $expiration The expiration time, defaults to 0.
      * @return bool                     Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_set_multi($items, $groups = '', $expiration = 0)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->setMulti($items, $groups, $expiration);
-    }
+	function wp_cache_set_multi( $items, $groups = '', $expiration = 0 ) {
+		global $wp_object_cache;
+		return $wp_object_cache->setMulti( $items, $groups, $expiration );
+	}
 
     /**
      * Set a Memcached option.
@@ -472,11 +447,10 @@ if (class_exists('Memcached')) {
      * @param mixed     $value  Option value.
      * @return bool             Returns TRUE on success or FALSE on failure.
      */
-    function wp_cache_set_option($option, $value)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->setOption($option, $value);
-    }
+	function wp_cache_set_option( $option, $value ) {
+		global $wp_object_cache;
+		return $wp_object_cache->setOption( $option, $value );
+	}
 
     /**
      * Switch blog prefix, which changes the cache that is accessed.
@@ -484,11 +458,10 @@ if (class_exists('Memcached')) {
      * @param  int     $blog_id    Blog to switch to.
      * @return void
      */
-    function wp_cache_switch_to_blog($blog_id)
-    {
-        global $wp_object_cache;
-        return $wp_object_cache->switch_to_blog($blog_id);
-    }
+	function wp_cache_switch_to_blog( $blog_id ) {
+		global $wp_object_cache;
+		return $wp_object_cache->switch_to_blog( $blog_id );
+	}
 
 
     /**
@@ -497,12 +470,11 @@ if (class_exists('Memcached')) {
      * @global  WP_Object_Cache     $wp_object_cache    WordPress Object Cache
      * @return  void
      */
-    function wp_cache_init()
-    {
-        global $wp_object_cache;
-        //Create a persistent instance
-        $wp_object_cache = new WP_Object_Cache(OC4EVERYONE_PREDEFINED_SERVER);
-    }
+	function wp_cache_init() {
+		global $wp_object_cache;
+		// Create a persistent instance.
+		$wp_object_cache = new WP_Object_Cache( OC4EVERYONE_PREDEFINED_SERVER );
+	}
 
     /**
      * Adds a group or set of groups to the list of non-persistent groups.
@@ -510,8 +482,7 @@ if (class_exists('Memcached')) {
      * @param   string|array    $groups     A group or an array of groups to add.
      * @return  void
      */
-    function wp_cache_add_global_groups($groups)
-    {
+	function wp_cache_add_global_groups( $groups ) {
         global $wp_object_cache;
         $wp_object_cache->add_global_groups($groups);
     }
@@ -522,14 +493,13 @@ if (class_exists('Memcached')) {
      * @param   string|array    $groups     A group or an array of groups to add.
      * @return  void
      */
-    function wp_cache_add_non_persistent_groups($groups)
-    {
+	function wp_cache_add_non_persistent_groups( $groups ) {
         global $wp_object_cache;
         $wp_object_cache->add_non_persistent_groups($groups);
     }
 
-    class WP_Object_Cache
-    {
+	class WP_Object_Cache {
+
         public $now = 0; //init
 
         public $thirty_days = 60 * 60 * 24 * 30;
@@ -546,21 +516,21 @@ if (class_exists('Memcached')) {
          *
          * @var array
          */
-        public $cache = array();
+		public $cache = array();
 
         /**
          * List of global groups.
          *
          * @var array
          */
-        public $global_groups = array('users', 'userlogins', 'usermeta', 'site-options', 'site-lookup', 'blog-lookup', 'blog-details', 'rss');
+		public $global_groups = array( 'users', 'userlogins', 'usermeta', 'site-options', 'site-lookup', 'blog-lookup', 'blog-details', 'rss' );
 
         /**
          * List of groups not saved to Memcached.
          *
          * @var array
          */
-        public $no_mc_groups = array('comment', 'counts', 'plugins');
+		public $no_mc_groups = array( 'comment', 'counts', 'plugins' );
 
         /**
          * Prefix used for global groups.
@@ -585,33 +555,32 @@ if (class_exists('Memcached')) {
          *
          * @param   null    $persistent_id      To create an instance that persists between requests, use persistent_id to specify a unique ID for the instance.
          */
-        public function __construct($persistent_id = null)
-        {
-            global $blog_id, $table_prefix;
+		public function __construct( $persistent_id = null ) {
+			global $blog_id, $table_prefix;
 
-            if (is_null($persistent_id) || !is_string($persistent_id)) {
-                $this->m = new Memcached();
-            } else {
-                $this->m = new Memcached($persistent_id);
-            }
+			if ( is_null( $persistent_id ) || ! is_string( $persistent_id ) ) {
+				$this->m = new Memcached();
+			} else {
+				$this->m = new Memcached( $persistent_id );
+			}
 
-            //Connect if neccesary
-            if (!count($this->m->getServerList())) {
-                list($node, $port) = explode(':', OC4EVERYONE_PREDEFINED_SERVER);
+			// Connect if neccesary.
+			if ( ! count( $this->m->getServerList() ) ) {
+				list($node, $port) = explode( ':', OC4EVERYONE_PREDEFINED_SERVER );
 
-                $this->m->addServer($node, $port, PHP_INT_MAX);
+				$this->m->addServer( $node, $port, PHP_INT_MAX );
 
-                //Started?
-                $this->m->add('wordpress_server_init_cache_time', date('d/m/Y G:i:s'));
-            }
+				// Started?
+				$this->m->add( 'wordpress_server_init_cache_time', gmdate( 'd/m/Y G:i:s' ) );
+			}
 
-            // Assign global and blog prefixes for use with keys
-            if (function_exists('is_multisite')) {
-                $this->global_prefix = (is_multisite() || defined('CUSTOM_USER_TABLE') && defined('CUSTOM_USER_META_TABLE')) ? '' : $table_prefix;
-                $this->blog_prefix = (is_multisite() ? $blog_id : $table_prefix) . ':';
-            }
+			// Assign global and blog prefixes for use with keys.
+			if ( function_exists( 'is_multisite' ) ) {
+				$this->global_prefix = ( is_multisite() || defined( 'CUSTOM_USER_TABLE' ) && defined( 'CUSTOM_USER_META_TABLE' ) ) ? '' : $table_prefix;
+				$this->blog_prefix   = ( is_multisite() ? $blog_id : $table_prefix ) . ':';
+			}
 
-            // Setup cacheable values for handling expiration times
+			// Setup cacheable values for handling expiration times.
             $this->now         = time();
         }
 
@@ -631,61 +600,60 @@ if (class_exists('Memcached')) {
          * @param   bool        $byKey          True to store in internal cache by key; false to not store by key
          * @return  bool                        Returns TRUE on success or FALSE on failure.
          */
-        public function add($key, $value, $group = 'default', $expiration = 0, $server_key = '', $byKey = false)
-        {
-            /*
-    		 * Ensuring that wp_suspend_cache_addition is defined before calling, because sometimes an advanced-cache.php
-    		 * file will load object-cache.php before wp-includes/functions.php is loaded. In those cases, if wp_cache_add
-    		 * is called in advanced-cache.php before any more of WordPress is loaded, we get a fatal error because
-    		 * wp_suspend_cache_addition will not be defined until wp-includes/functions.php is loaded.
-    		 */
-            if (function_exists('wp_suspend_cache_addition') && wp_suspend_cache_addition()) {
-                return false;
-            }
+		public function add( $key, $value, $group = 'default', $expiration = 0, $server_key = '', $byKey = false ) {
+			/*
+			 * Ensuring that wp_suspend_cache_addition is defined before calling, because sometimes an advanced-cache.php
+			 * file will load object-cache.php before wp-includes/functions.php is loaded. In those cases, if wp_cache_add
+			 * is called in advanced-cache.php before any more of WordPress is loaded, we get a fatal error because
+			 * wp_suspend_cache_addition will not be defined until wp-includes/functions.php is loaded.
+			 */
+			if ( function_exists( 'wp_suspend_cache_addition' ) && wp_suspend_cache_addition() ) {
+				return false;
+			}
 
-            if ($key === 'alloptions' && $group === 'options') {
-                return $this->setAllOptions($value);
-            }
+			if ( 'alloptions' === $key && 'options' === $group ) {
+				return $this->setAllOptions( $value );
+			}
 
-            $derived_key = $this->buildKey($key, $group);
-            $expiration  = $this->sanitize_expiration($expiration);
+			$derived_key = $this->buildKey( $key, $group );
+			$expiration  = $this->sanitize_expiration( $expiration );
 
-            // If group is a non-Memcached group, save to runtime cache, not Memcached
-            if (in_array($group, $this->no_mc_groups)) {
+			// If group is a non-Memcached group, save to runtime cache, not Memcached.
+			if ( in_array( $group, $this->no_mc_groups, true ) ) {
 
-                // Add does not set the value if the key exists; mimic that here
-                if (isset($this->cache[$derived_key])) {
-                    return false;
-                }
+				// Add does not set the value if the key exists; mimic that here.
+				if ( isset( $this->cache[ $derived_key ] ) ) {
+					return false;
+				}
 
-                $this->add_to_internal_cache($derived_key, $value);
+				$this->add_to_internal_cache( $derived_key, $value );
 
-                return true;
-            }
+				return true;
+			}
 
-            // Save to Memcached
-            if ($byKey) {
-                $result = $this->m->addByKey($server_key, $derived_key, $value, $expiration);
-            } else {
-                $result = $this->m->add($derived_key, $value, $expiration);
-            }
+			// Save to Memcached.
+			if ( $byKey ) {
+				$result = $this->m->addByKey( $server_key, $derived_key, $value, $expiration );
+			} else {
+				$result = $this->m->add( $derived_key, $value, $expiration );
+			}
 
-            // Set to Memcached, key exists
-            if (Memcached::RES_NOTSTORED === $this->getResultCode()) {
-                if ($byKey) {
-                    $result = $this->m->setByKey($server_key, $derived_key, $value, $expiration);
-                } else {
-                    $result = $this->m->set($derived_key, $value, $expiration);
-                }
-            }
+			// Set to Memcached, key exists.
+			if ( Memcached::RES_NOTSTORED === $this->getResultCode() ) {
+				if ( $byKey ) {
+					$result = $this->m->setByKey( $server_key, $derived_key, $value, $expiration );
+				} else {
+					$result = $this->m->set( $derived_key, $value, $expiration );
+				}
+			}
 
-            // Store in runtime cache if add was successful
-            if (Memcached::RES_SUCCESS === $this->getResultCode()) {
-                $this->add_to_internal_cache($derived_key, $value);
-            }
+			// Store in runtime cache if add was successful.
+			if ( Memcached::RES_SUCCESS === $this->getResultCode() ) {
+				$this->add_to_internal_cache( $derived_key, $value );
+			}
 
-            return $result;
-        }
+			return $result;
+		}
 
         /**
          * Append data to an existing item.
@@ -706,40 +674,39 @@ if (class_exists('Memcached')) {
          * @param   bool        $byKey          True to store in internal cache by key; false to not store by key
          * @return  bool                        Returns TRUE on success or FALSE on failure.
          */
-        public function append($key, $value, $group = 'default', $server_key = '', $byKey = false)
-        {
-            if (!is_string($value) && !is_int($value) && !is_float($value)) {
-                return false;
-            }
+		public function append( $key, $value, $group = 'default', $server_key = '', $byKey = false ) {
+			if ( ! is_string( $value ) && ! is_int( $value ) && ! is_float( $value ) ) {
+				return false;
+			}
 
-            $derived_key = $this->buildKey($key, $group);
+			$derived_key = $this->buildKey( $key, $group );
 
-            // If group is a non-Memcached group, append to runtime cache value, not Memcached
-            if (in_array($group, $this->no_mc_groups)) {
-                if (!isset($this->cache[$derived_key])) {
-                    return false;
-                }
+			// If group is a non-Memcached group, append to runtime cache value, not Memcached.
+			if ( in_array( $group, $this->no_mc_groups, true ) ) {
+				if ( ! isset( $this->cache[ $derived_key ] ) ) {
+					return false;
+				}
 
-                $combined = $this->combine_values($this->cache[$derived_key], $value, 'app');
-                $this->add_to_internal_cache($derived_key, $combined);
-                return true;
-            }
+				$combined = $this->combine_values( $this->cache[ $derived_key ], $value, 'app' );
+				$this->add_to_internal_cache( $derived_key, $combined );
+				return true;
+			}
 
-            // Append to Memcached value
-            if ($byKey) {
-                $result = $this->m->appendByKey($server_key, $derived_key, $value);
-            } else {
-                $result = $this->m->append($derived_key, $value);
-            }
+			// Append to Memcached value.
+			if ( $byKey ) {
+				$result = $this->m->appendByKey( $server_key, $derived_key, $value );
+			} else {
+				$result = $this->m->append( $derived_key, $value );
+			}
 
-            // Store in runtime cache if add was successful
-            if (Memcached::RES_SUCCESS === $this->getResultCode()) {
-                $combined = $this->combine_values($this->cache[$derived_key], $value, 'app');
-                $this->add_to_internal_cache($derived_key, $combined);
-            }
+			// Store in runtime cache if add was successful.
+			if ( Memcached::RES_SUCCESS === $this->getResultCode() ) {
+				$combined = $this->combine_values( $this->cache[ $derived_key ], $value, 'app' );
+				$this->add_to_internal_cache( $derived_key, $combined );
+			}
 
-            return $result;
-        }
+			return $result;
+		}
 
         /**
          * Performs a "check and set" to store data.

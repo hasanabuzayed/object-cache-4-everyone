@@ -5,7 +5,7 @@
  * Description: Memcached or disk backend support for the WP Object Cache. Memcached server running and PHP Memcached class needed for better performance. No configuration needed, runs automatically
  * Plugin URI: https://wordpress.org/plugins/object-cache-4-everyone
  * Author: fpuenteonline
- * Version: 2.2
+ * Version: 2.3.3
  * Author URI: https://twitter.com/fpuenteonline
  * License:     GPLv2 or later
  * License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -21,20 +21,20 @@ if (!defined('ABSPATH')) {
 }
 
 //Delete object-cache.php
-include_once('oc4-deactivation.php');
+include_once 'oc4-deactivation.php';
 register_deactivation_hook(__FILE__, 'oc4everyone_deactivation');
 
-//First install
+// First install.
 if (!function_exists('oc4everyone_plugins_loaded_activation')) {
     function oc4everyone_admin_notices_no_class_exists()
     {
         if (defined('OC4EVERYONE_DISABLE_DISK_CACHE') && OC4EVERYONE_DISABLE_DISK_CACHE) {
-            echo '<div class="notice notice-warning is-dismissible"><p><strong>Object Cache 4 everyone</strong> ' . esc_html__('needs PHP Memcached class installed for better performance.') . '</p></div>';
+            echo '<div class="notice notice-warning is-dismissible"><p><strong>Object Cache 4 everyone</strong> ' . esc_html__('needs PHP Memcached class installed for better performance.', 'object-cache-4-everyone') . '</p></div>';
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log('Object Cache 4 everyone::needs PHP Memcached class installed for better performance.');
             }
         } else {
-            echo '<div class="notice notice-warning is-dismissible"><p><strong>Object Cache 4 everyone</strong> ' . esc_html__('needs PHP Memcached class installed for better performance. Running disk support instead.') . '</p></div>';
+            echo '<div class="notice notice-warning is-dismissible"><p><strong>Object Cache 4 everyone</strong> ' . esc_html__('needs PHP Memcached class installed for better performance. Running disk support instead.', 'object-cache-4-everyone') . '</p></div>';
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log('Object Cache 4 everyone::needs PHP Memcached class installed for better performance. Running disk support instead.');
             }
@@ -43,12 +43,12 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
     function oc4everyone_admin_notices_no_server_running()
     {
         if (defined('OC4EVERYONE_DISABLE_DISK_CACHE') && OC4EVERYONE_DISABLE_DISK_CACHE) {
-            echo '<div class="notice notice-warning is-dismissible"><p><strong>Object Cache 4 everyone</strong> ' . esc_html__('needs PHP Memcached class installed for better performance.') . '</p></div>';
+            echo '<div class="notice notice-warning is-dismissible"><p><strong>Object Cache 4 everyone</strong> ' . esc_html__('needs PHP Memcached class installed for better performance.', 'object-cache-4-everyone') . '</p></div>';
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log('Object Cache 4 everyone::needs PHP Memcached class installed for better performance.');
             }
         } else {
-            echo '<div class="notice notice-warning is-dismissible"><p><strong>Object Cache 4 everyone</strong> ' . esc_html__('needs PHP Memcached class installed for better performance. Running disk support instead.') . '</p></div>';
+            echo '<div class="notice notice-warning is-dismissible"><p><strong>Object Cache 4 everyone</strong> ' . esc_html__('needs PHP Memcached class installed for better performance. Running disk support instead.', 'object-cache-4-everyone') . '</p></div>';
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log('Object Cache 4 everyone::needs PHP Memcached class installed for better performance. Running disk support instead.');
             }
@@ -59,7 +59,7 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
         if (defined('WP_DEBUG') && WP_DEBUG) {
             error_log('Object Cache 4 everyone::has detected another WP Object Cache instance running. Plugin is deactivated now.');
         }
-        echo '<div class="notice notice-error is-dismissible"><p><strong>Object Cache 4 everyone</strong> ' . esc_html__('has detected another WP Object Cache instance running. Plugin is deactivated now.') . '<br/><code>' . WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'object-cache.php' . '</code></p></div>';
+        echo '<div class="notice notice-error is-dismissible"><p><strong>Object Cache 4 everyone</strong> ' . esc_html__('has detected another WP Object Cache instance running. Plugin is deactivated now.', 'object-cache-4-everyone') . '<br/><code>' . esc_html(WP_CONTENT_DIR) . esc_html(DIRECTORY_SEPARATOR) . 'object-cache.php' . '</code></p></div>';
         if (isset($_GET['activate'])) {
             unset($_GET['activate']);
         }
@@ -70,9 +70,9 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
             error_log('Object Cache 4 everyone::running Disk. Thanks for using.');
         }
         echo '<div class="notice notice-success is-dismissible"><p>';
-        echo '<strong>Object Cache 4 everyone</strong> ' . esc_html__('running. Thanks for using.');
+        echo '<strong>Object Cache 4 everyone</strong> ' . esc_html__('running. Thanks for using.', 'object-cache-4-everyone');
         echo ' ';
-        echo esc_html__('Disk external object cache running');
+        echo esc_html__('Disk external object cache running', 'object-cache-4-everyone');
         echo '</p></div>';
 
         if (isset($_GET['activate'])) {
@@ -85,9 +85,9 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
             error_log('Object Cache 4 everyone::running Memcached. Thanks for using.');
         }
         echo '<div class="notice notice-success is-dismissible"><p>';
-        echo '<strong>Object Cache 4 everyone</strong> ' . esc_html__('running. Thanks for using.');
+        echo '<strong>Object Cache 4 everyone</strong> ' . esc_html__('running. Thanks for using.', 'object-cache-4-everyone');
         echo ' ';
-        echo esc_html__('Memcached Server running');
+        echo esc_html__('Memcached Server running', 'object-cache-4-everyone');
         echo '</p></div>';
 
         if (isset($_GET['activate'])) {
@@ -108,14 +108,14 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
     function oc4everyone_plugins_loaded_activation()
     {
         if (defined('OC4EVERYONE_PREDEFINED_SERVER')) {
-            return; //Nothing needed, everything works
+            return; // Nothing needed, everything works.
         }
 
         if (!current_user_can('activate_plugins') || !is_admin()) {
-            return; //Only for admin users and dashboard access
+            return; // Only for admin users and dashboard access.
         }
 
-        //Check object-cache.php exists
+        // Check object-cache.php exists.
         if (file_exists(WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'object-cache.php')) {
             add_action('admin_notices', 'oc4everyone_admin_notices_object', PHP_INT_MAX);
             add_action('admin_init', 'oc4everyone_admin_init_deactivate_itself', PHP_INT_MAX);
@@ -133,10 +133,10 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
                 '127.0.0.1:20001'
             );
 
-            if (defined('OC4EVERYONE_MEMCACHED_SERVER')) {
+            if (defined('OC4EVERYONE_MEMCACHED_SERVER') && is_string(OC4EVERYONE_MEMCACHED_SERVER) && preg_match('/^[A-Za-z0-9.\-]+:[0-9]{1,5}$/', OC4EVERYONE_MEMCACHED_SERVER)) {
                 $memcached_servers =  array(OC4EVERYONE_MEMCACHED_SERVER);
             } else {
-                //Try SG Memcached server first
+                // Try SG Memcached server first.
                 // Get the account name.
                 if (function_exists('get_current_user') && get_current_user() !== '') {
                     $account_name = get_current_user();
@@ -150,7 +150,7 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
 
                         // Return empty string if there is no match.
                         if (!empty($matches[1])) {
-                            //Override current list
+                            // Override current list.
                             $memcached_servers =  array(
                                 '127.0.0.1:' . $matches[1]
                             );
@@ -165,7 +165,7 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
                 list($node, $port) = explode(':', $server);
                 $temp_Memcached->addServer($node, $port);
 
-                //Checks server
+                // Checks server.
                 $temp_Memcached->getVersion();
                 if ($temp_Memcached->getResultCode() === 0) {
                     $found_server =  $server;
@@ -174,9 +174,9 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
             }
             if ($found_server !== '') {
 
-                //Memcached + Memcached Server running
+                // Memcached + Memcached Server running.
 
-                //Copy object-cache.php + define('OC4EVERYONE_PREDEFINED_SERVER', $server); line
+                // Copy object-cache.php + define('OC4EVERYONE_PREDEFINED_SERVER', $server); line.
                 $template = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'object-cache-memcached-template.php');
 
                 $template = "<?php
@@ -188,27 +188,27 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
  *
  */
 ?>" . $template;
-                $template .= '//Detected memcached server - ' . date('d/m/Y G:i:s', current_time('timestamp', 0)) . PHP_EOL;
-                $template .= "define('OC4EVERYONE_PREDEFINED_SERVER', '$found_server');" . PHP_EOL;
+                $template .= '//Detected memcached server - ' . gmdate('d/m/Y G:i:s', time()) . PHP_EOL;
+                $template .= 'define(\'OC4EVERYONE_PREDEFINED_SERVER\', ' . var_export($found_server, true) . ');' . PHP_EOL;
 
                 $template .= "if (! defined('WP_CACHE_KEY_SALT')) {" . PHP_EOL;
                 global $wpdb;
-                $template .= "define('WP_CACHE_KEY_SALT', '" . DB_NAME . DB_USER . $wpdb->prefix . "');" . PHP_EOL;
+                $template .= "define('WP_CACHE_KEY_SALT', '" . md5(DB_NAME . DB_USER . $wpdb->prefix) . "');" . PHP_EOL;
                 $template .= "}" . PHP_EOL;
 
                 file_put_contents(WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'object-cache.php', $template);
 
                 add_action('admin_notices', 'oc4everyone_admin_notices_ok_memcached', PHP_INT_MAX);
 
-                //Flush cache on plugin activation
+                // Flush cache on plugin activation.
                 wp_cache_flush();
 
                 return;
             } else {
-                //Memcached - Memcached Server not running
+                // Memcached - Memcached Server not running.
                 add_action('admin_notices', 'oc4everyone_admin_notices_no_server_running', PHP_INT_MAX);
             }        
-        //class_exists('Memcached')
+        // class_exists('Memcached').
         } else {
             add_action('admin_notices', 'oc4everyone_admin_notices_no_class_exists', PHP_INT_MAX);
         }
@@ -218,7 +218,7 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
             return;
         }
 
-        //Copy object-cache.php + define('OC4EVERYONE_PREDEFINED_SERVER', ''); line
+        // Copy object-cache.php + define('OC4EVERYONE_PREDEFINED_SERVER', ''); line.
         $template = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'object-cache-disk-template.php');
 
         $template = "<?php
@@ -231,8 +231,8 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
  */
 ?>" . $template;
 
-        $template .= '//No detected memcached server - ' . date('d/m/Y G:i:s', current_time('timestamp', 0)) . PHP_EOL;
-        $template .= "define('OC4EVERYONE_PREDEFINED_SERVER', '');" . PHP_EOL;
+        $template .= '//No detected memcached server - ' . gmdate('d/m/Y G:i:s', time()) . PHP_EOL;
+        $template .= 'define(\'OC4EVERYONE_PREDEFINED_SERVER\', ' . var_export('', true) . ');' . PHP_EOL;
 
         $template .= "if (! defined('WP_CACHE_KEY_SALT')) {" . PHP_EOL;
         $template .= "define('WP_CACHE_KEY_SALT', '" . filemtime(__FILE__) . "');" . PHP_EOL;
@@ -242,7 +242,7 @@ if (!function_exists('oc4everyone_plugins_loaded_activation')) {
 
         add_action('admin_notices', 'oc4everyone_admin_notices_ok_disk', PHP_INT_MAX);
 
-        //Flush cache on plugin activation
+        // Flush cache on plugin activation.
         wp_cache_flush();
     }
 }
@@ -254,31 +254,40 @@ function oc4everyone_add_server_info($links_array, $plugin_file_name, $plugin_da
     global $wp_object_cache;
 
     if (strpos($plugin_file_name, basename(__FILE__)) && class_exists('Memcached') && method_exists($wp_object_cache, 'getStats') && file_exists(WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'object-cache.php')) {
-        //Extra check
-        if(!defined('OC4EVERYONE_PREDEFINED_SERVER') || !array_key_exists(OC4EVERYONE_PREDEFINED_SERVER, $wp_object_cache->getStats())){
-            return $links_array;        
+        // Read the stats once; every value below comes from the Memcached server, so it is treated as untrusted and escaped on output.
+        $all_stats = $wp_object_cache->getStats();
+
+        // Extra check.
+        if (!defined('OC4EVERYONE_PREDEFINED_SERVER') || !array_key_exists(OC4EVERYONE_PREDEFINED_SERVER, $all_stats)) {
+            return $links_array;
         }
 
-        $hits = $wp_object_cache->getStats()[OC4EVERYONE_PREDEFINED_SERVER]['get_hits'];
-        //Extra check
-        if($hits == 0) {
-            return $links_array;        
+        $stats = $all_stats[OC4EVERYONE_PREDEFINED_SERVER];
+
+        $hits = isset($stats['get_hits']) ? (int) $stats['get_hits'] : 0;
+        // Extra check.
+        if ($hits === 0) {
+            return $links_array;
         }
-        $misses = $wp_object_cache->getStats()[OC4EVERYONE_PREDEFINED_SERVER]['get_misses'];
-        $total = $hits + $misses;
-        $found = @round((100 / $total) * $hits, 2);
+        $misses = isset($stats['get_misses']) ? (int) $stats['get_misses'] : 0;
+        $total  = $hits + $misses;
+        $found  = $total > 0 ? round((100 / $total) * $hits, 2) : 0;
 
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('Object Cache 4 everyone::Memcached Server running');
+            error_log('Object Cache 4 everyone::Memcached Server running'); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
         }
         $nonce = wp_create_nonce('flush_memcached_nonce');
 
-        $links_array[] = '<a href="' . esc_url(admin_url('admin-post.php?action=oc4flush_memcached&nonce=' . $nonce)) . '"><strong>' . esc_html__('Flush cache') . '</strong></a>' . 
+        $uptime      = isset($stats['uptime']) ? (int) $stats['uptime'] : 0;
+        $curr_items  = isset($stats['curr_items']) ? $stats['curr_items'] : 0;
+        $total_items = isset($stats['total_items']) ? $stats['total_items'] : 0;
+
+        $links_array[] = '<a href="' . esc_url(admin_url('admin-post.php?action=oc4flush_memcached&nonce=' . $nonce)) . '"><strong>' . esc_html__('Flush cache', 'object-cache-4-everyone') . '</strong></a>' .
             '<br/><br/>' .
-            esc_html__('Memcached Server running:') . ' <strong><code style="background-color: inherit;">' . OC4EVERYONE_PREDEFINED_SERVER . '</code></strong>' . '<br/>' .
-            esc_html__('Cache Hit Ratio') . ' <strong><code style="background-color: inherit;">' . $found . '%</code></strong>' . '<br/>' .
-            esc_html__('Uptime:')  . ' <strong><code style="background-color: inherit;">' . secondsToHumanReadable($wp_object_cache->getStats()[OC4EVERYONE_PREDEFINED_SERVER]['uptime']) . '</strong></code>' . '<br/>' .
-            esc_html__('Current Unique Items / Total Items:') . ' <strong><code style="background-color: inherit;">' . $wp_object_cache->getStats()[OC4EVERYONE_PREDEFINED_SERVER]['curr_items'] . ' / ' . $wp_object_cache->getStats()[OC4EVERYONE_PREDEFINED_SERVER]['total_items'] . '</strong></code>' . '<br/>';
+            esc_html__('Memcached Server running:', 'object-cache-4-everyone') . ' <strong><code style="background-color: inherit;">' . esc_html(OC4EVERYONE_PREDEFINED_SERVER) . '</code></strong>' . '<br/>' .
+            esc_html__('Cache Hit Ratio', 'object-cache-4-everyone') . ' <strong><code style="background-color: inherit;">' . esc_html($found) . '%</code></strong>' . '<br/>' .
+            esc_html__('Uptime:', 'object-cache-4-everyone')  . ' <strong><code style="background-color: inherit;">' . esc_html(secondsToHumanReadable($uptime)) . '</code></strong>' . '<br/>' .
+            esc_html__('Current Unique Items / Total Items:', 'object-cache-4-everyone') . ' <strong><code style="background-color: inherit;">' . absint($curr_items) . ' / ' . absint($total_items) . '</code></strong>' . '<br/>';
     }
 
     return $links_array;
@@ -288,14 +297,17 @@ add_filter('plugin_row_meta', 'oc4everyone_add_server_info', PHP_INT_MAX, 4);
 
 add_action('admin_post_oc4flush_memcached', 'oc4flush_memcached');
 function oc4flush_memcached() {
-    if (!class_exists('Memcached')) {
-        wp_die(esc_html__('Failed to flush Memcached server'));
+    // Authorization: only administrators may flush the cache. The nonce alone is not an authorization check.
+    if (!current_user_can('manage_options')) {
+        wp_die(esc_html__('Access denied.', 'object-cache-4-everyone'), '', array('response' => 403));
     }
-    // Verify the nonce
-    if (isset($_GET['nonce']) && wp_verify_nonce($_GET['nonce'], 'flush_memcached_nonce')) {
-        //flush cache 
+    if (!class_exists('Memcached')) {
+        wp_die(esc_html__('Failed to flush Memcached server', 'object-cache-4-everyone'));
+    }
+    // Verify the nonce.
+    if (isset($_GET['nonce']) && wp_verify_nonce(sanitize_key($_GET['nonce']), 'flush_memcached_nonce')) {
+        // Flush cache.
         global $wp_object_cache;
-        error_log(print_r($wp_object_cache->getStats()[OC4EVERYONE_PREDEFINED_SERVER],true));        
         $wp_object_cache->flush();
 
         $memcached = new Memcached();
@@ -304,15 +316,15 @@ function oc4flush_memcached() {
 
         if ($memcached->flush(0)) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Object Cache 4 everyone::Memcached server flushed.');
+                error_log('Object Cache 4 everyone::Memcached server flushed.'); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
             }
             wp_redirect(admin_url('plugins.php'));
             exit;
         } else {
-            wp_die(esc_html__('Failed to flush Memcached server'));
+            wp_die(esc_html__('Failed to flush Memcached server', 'object-cache-4-everyone'));
         }
     } else {
-        wp_die(esc_html__('Nonce verification failed. Access denied.'));
+        wp_die(esc_html__('Nonce verification failed. Access denied.', 'object-cache-4-everyone'));
     }
 }
 
